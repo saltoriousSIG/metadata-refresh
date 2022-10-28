@@ -13,7 +13,7 @@ const contract_address = "0x42373fb90e871e6aa06758f58d093bb03db392da";
 const main = async () => {
   const listAssetsResponse = await client.listAssets({
     pageSize: 1000,
-    collection: collectionAddress,
+    collection: collection_address,
   });
 
   const tokenIds = listAssetsResponse.result.map(
