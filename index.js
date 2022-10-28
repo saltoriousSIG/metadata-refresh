@@ -16,7 +16,7 @@ const main = async () => {
     collection: collectionAddress,
   });
 
-  const tokenIds: string[] = listAssetsResponse.result.map(
+  const tokenIds = listAssetsResponse.result.map(
     (asset) => asset.token_id
   );
   console.log(tokenIds);
