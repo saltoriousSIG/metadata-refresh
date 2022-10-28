@@ -1,10 +1,12 @@
-const imxSDK = require("@imtbl/core-sdk");
+const { ImmutableX, Config } = require("@imtbl/core-sdk");
 const { Wallet } = require("@ethersproject/wallet");
 const { InfuraProvider } = require("@ethersproject/providers");
 const axios = require("axios");
 const prompt = require("prompt-sync")();
 require("dotenv").config();
 
+const config = Config.PRODUCTION;
+const client = new ImmutableX(config);
 const private_key = process.env.PRIVATE_KEY;
 const infura_key = process.env.INFURA_API_KEY;
 
@@ -13,7 +15,7 @@ const signer = new Wallet(private_key).connect(provider);
 
 const main = async () => {
   const timestamp = Math.floor(Date.now() / 1000).toString();
-  const signature = await imxSDK.signRaw(timestamp, signer);
+  const signature = await client.signRaw(timestamp, signer);
 
   const collection_address = prompt("Please enter your collection address");
   
