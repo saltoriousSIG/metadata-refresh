@@ -11,32 +11,29 @@ const signer = new Wallet(private_key);
 
 const collection_address = "0x42373fb90e871e6aa06758f58d093bb03db392da";
 const main = async () => {
-  const listAssetsResponse = await client.listAssets({
-    pageSize: 1000,
-    collection: collection_address,
-  });
+  //const listAssetsResponse = await client.listAssets({
+  //  pageSize: 1000,
+  //  collection: collection_address,
+  //});
 
-  const tokenIds = listAssetsResponse.result.map(
-    (asset) => asset.token_id
+  //const tokenIds = listAssetsResponse.result.map(
+  //  (asset) => asset.token_id
+  //);
+
+  const token_ask = prompt(
+    "enter the ids you wanna refresh separated by commas (no spaces)"
   );
-  console.log(tokenIds);
+  const tokenIds = token_ask.split(',');
+  const createRefreshRequestParams = {
+    collection_address: collection_address,
+    token_ids: tokenIds, // Token ids for metadata refresh, limit to 1000 per request
+  };
 
-  const confirm_refresh = prompt(
-    "would you like to proceed refreshing these ids? yes/no?"
+  const createMetadataRefreshResponse = await client.createMetadataRefresh(
+    ethSigner,
+    createRefreshRequestParams
   );
-
-  if (confirm_refresh === "yes") {
-    const createRefreshRequestParams = {
-      collection_address: collection_address,
-      token_ids: tokenIds, // Token ids for metadata refresh, limit to 1000 per request
-    };
-
-    const createMetadataRefreshResponse = await client.createMetadataRefresh(
-      ethSigner,
-      createRefreshRequestParams
-    );
-    console.log(createMetadataRefreshResponse);
-  }
+  console.log(createMetadataRefreshResponse);
 };
 
 main();
