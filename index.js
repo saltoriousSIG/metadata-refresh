@@ -22,20 +22,21 @@ const main = async () => {
   console.log(tokenIds);
 
   const confirm_refresh = prompt(
-    "would you like to proceed refreshing these ids?"
+    "would you like to proceed refreshing these ids? yes/no?"
   );
 
-  const createRefreshRequestParams = {
-    collection_address: collection_address,
-    token_ids: tokenIds, // Token ids for metadata refresh, limit to 1000 per request
-  };
+  if (confirm_refresh === "yes") {
+    const createRefreshRequestParams = {
+      collection_address: collection_address,
+      token_ids: tokenIds, // Token ids for metadata refresh, limit to 1000 per request
+    };
 
-  const createMetadataRefreshResponse = await client.createMetadataRefresh(
-    ethSigner,
-    createRefreshRequestParams
-  );
-
-  console.log(createMetadataRefreshResponse)
+    const createMetadataRefreshResponse = await client.createMetadataRefresh(
+      ethSigner,
+      createRefreshRequestParams
+    );
+    console.log(createMetadataRefreshResponse);
+  }
 };
 
 main();
