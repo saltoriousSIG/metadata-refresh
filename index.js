@@ -9,7 +9,7 @@ const private_key = process.env.PRIVATE_KEY;
 
 const signer = new Wallet(private_key);
 
-const contract_address = "0x42373fb90e871e6aa06758f58d093bb03db392da";
+const collection_address = "0x42373fb90e871e6aa06758f58d093bb03db392da";
 const main = async () => {
   const listAssetsResponse = await client.listAssets({
     pageSize: 1000,
