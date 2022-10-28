@@ -1,51 +1,41 @@
 const { ImmutableX, Config } = require("@imtbl/core-sdk");
 const { Wallet } = require("@ethersproject/wallet");
-const { InfuraProvider } = require("@ethersproject/providers");
-const axios = require("axios");
 const prompt = require("prompt-sync")();
 require("dotenv").config();
 
 const config = Config.PRODUCTION;
 const client = new ImmutableX(config);
 const private_key = process.env.PRIVATE_KEY;
-const infura_key = process.env.INFURA_API_KEY;
 
-const provider = new InfuraProvider("homestead", infura_key);
-const signer = new Wallet(private_key).connect(provider);
+const signer = new Wallet(private_key);
 
+const contract_address = "0x42373fb90e871e6aa06758f58d093bb03db392da";
 const main = async () => {
-  const timestamp = Math.floor(Date.now() / 1000).toString();
-  const signature = await client.signRaw(timestamp, signer);
+  const listAssetsResponse = await client.listAssets({
+    pageSize: 1000,
+    collection: collectionAddress,
+  });
 
-  const collection_address = prompt("Please enter your collection address");
-  
-  const address = prompt('Please enter the address that owns this collection');
-
-  const ask_for_tokens = prompt(
-    "Please enter all token ids separated by a comma"
+  const tokenIds: string[] = listAssetsResponse.result.map(
+    (asset) => asset.token_id
   );
-  const tokens = ask_for_tokens.split(",");
+  console.log(tokenIds);
 
-  const options = {
-    method: "POST",
-    url: "https://api.x.immutable.com/v1/metadata-refreshes",
-    headers: {
-      "Content-Type": "application/json",
-      "x-imx-eth-signature": signature,
-      "x-imx-eth-timestamp": timestamp,
-      "x-imx-eth-address": address
-    },
-    data: { collection_address, token_ids: tokens },
+  const confirm_refresh = prompt(
+    "would you like to proceed refreshing these ids?"
+  );
+
+  const createRefreshRequestParams = {
+    collection_address: collection_address,
+    token_ids: tokenIds, // Token ids for metadata refresh, limit to 1000 per request
   };
 
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+  const createMetadataRefreshResponse = await client.createMetadataRefresh(
+    ethSigner,
+    createRefreshRequestParams
+  );
+
+  console.log(createMetadataRefreshResponse)
 };
 
 main();
